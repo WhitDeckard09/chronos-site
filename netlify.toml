@@ -1,0 +1,29 @@
+[build]
+  publish = "."
+
+# Drag-and-drop deploys upload the whole folder, so anything sitting next to
+# index.html is public. These are internal notes/config, not part of the site.
+[[redirects]]
+  from = "/BOOKING-SETUP.md"
+  to = "/index.html"
+  status = 404
+
+[[redirects]]
+  from = "/netlify.toml"
+  to = "/index.html"
+  status = 404
+
+[[redirects]]
+  from = "/vercel.json"
+  to = "/index.html"
+  status = 404
+
+# The whole site is one self-contained index.html — CSS, JS and images are all
+# inline — so there are no long-lived static assets to cache separately.
+# HTML must always revalidate so edits go live immediately.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
