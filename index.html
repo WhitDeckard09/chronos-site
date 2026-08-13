@@ -892,122 +892,6 @@ ul {
   color: var(--text-subtle);
 }
 
-/* Calculator Panel (Acctual Style) */
-.calculator-panel {
-  background: var(--bg-surface-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 2.25rem;
-}
-
-.calc-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.75rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.calc-badge {
-  font-size: 0.68rem;
-  color: var(--text-subtle);
-  letter-spacing: 0.06em;
-  margin-bottom: 0.25rem;
-}
-
-.calc-title {
-  font-size: 1.25rem;
-}
-
-.calc-pill {
-  font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-hairline);
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-sm);
-  color: var(--text-light);
-}
-
-.calc-body {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 2.5rem;
-  align-items: center;
-}
-
-.calc-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.calc-label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
-  color: var(--text-subtle);
-  margin-bottom: 0.5rem;
-}
-
-.calc-val {
-  color: var(--text-white);
-  font-weight: 600;
-}
-
-.clean-slider {
-  width: 100%;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-pill);
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-}
-
-.clean-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #FFFFFF;
-  cursor: pointer;
-  border: 2px solid var(--bg-canvas);
-  transition: transform var(--transition-fast);
-}
-
-.clean-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-.calc-outputs {
-  background: #090B0E;
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.output-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.out-k {
-  font-size: 0.72rem;
-  color: var(--text-subtle);
-}
-
-.out-v {
-  font-size: 1.35rem;
-  font-weight: 700;
-}
-
 /* --- 4. HOW IT WORKS (5-STEP GRID) --- */
 .process-grid {
   display: grid;
@@ -1944,10 +1828,6 @@ ul {
     grid-template-columns: 1fr;
   }
 
-  .calc-body {
-    grid-template-columns: 1fr;
-  }
-
   .faq-question {
     font-size: 0.95rem;
     padding: 1rem 1.1rem;
@@ -2266,48 +2146,6 @@ ul {
               <span>Reliability:</span> Full code ownership &amp; support
             </div>
           </article>
-        </div>
-
-        <!-- Clean Interactive ROI Estimator -->
-        <div class="calculator-panel">
-          <div class="calc-header">
-            <div>
-              <div class="calc-badge font-mono">ROI ESTIMATOR</div>
-              <h3 class="calc-title">Quantify Your Operational Time Reclaimed</h3>
-            </div>
-            <span class="calc-pill font-mono">ESTIMATED BENCHMARK</span>
-          </div>
-
-          <div class="calc-body">
-            <div class="calc-inputs">
-              <div class="calc-field">
-                <div class="calc-label font-mono">
-                  <span>TEAM MEMBERS AFFECTED</span>
-                  <span class="calc-val" id="teamSizeVal">12 People</span>
-                </div>
-                <input type="range" id="teamSizeSlider" min="2" max="100" value="12" class="clean-slider">
-              </div>
-              <div class="calc-field">
-                <div class="calc-label font-mono">
-                  <span>MANUAL HOURS / PERSON / WEEK</span>
-                  <span class="calc-val" id="hoursSpentVal">8 Hours</span>
-                </div>
-                <input type="range" id="hoursSpentSlider" min="2" max="30" value="8" class="clean-slider">
-              </div>
-            </div>
-
-            <div class="calc-outputs font-mono">
-              <div class="output-item">
-                <span class="out-k">ANNUAL HOURS SAVED</span>
-                <span class="out-v text-white" id="annualHoursSaved">4,992 hrs</span>
-              </div>
-              <div class="output-item">
-                <span class="out-k">RECLAIMED CAPITAL VALUE</span>
-                <span class="out-v text-white" id="annualValueSaved">$249,600/yr</span>
-              </div>
-              <button class="btn btn-primary btn-sm open-booking-btn">Automate This</button>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -2977,7 +2815,6 @@ ul {
  * Dovetail & Acctual Design Framework
  * 1. Hero Interactive Dot Field
  * 2. Interactive Live Workflow Showcase Switcher
- * 2. Dynamic Team ROI & Efficiency Estimator
  * 3. Fast Discovery Booking Modal & Slot Selector
  * 4. Clipboard Dispatch & Toast Notifications
  * 5. Mobile Navigation Controller
@@ -2986,7 +2823,6 @@ ul {
 document.addEventListener('DOMContentLoaded', () => {
   initHeroDotField();
   initWorkflowShowcase();
-  initRoiCalculator();
   initBookingModal();
   initClipboardHandlers();
   initFaqAccordion();
@@ -3403,39 +3239,6 @@ function initWorkflowShowcase() {
       });
     });
   });
-}
-
-/* ==========================================================================
-   2. DYNAMIC ROI CALCULATOR
-   ========================================================================== */
-function initRoiCalculator() {
-  const teamSlider = document.getElementById('teamSizeSlider');
-  const hoursSlider = document.getElementById('hoursSpentSlider');
-  const teamVal = document.getElementById('teamSizeVal');
-  const hoursVal = document.getElementById('hoursSpentVal');
-  const annualHours = document.getElementById('annualHoursSaved');
-  const annualValue = document.getElementById('annualValueSaved');
-
-  if (!teamSlider || !hoursSlider) return;
-
-  function calculate() {
-    const teamSize = parseInt(teamSlider.value, 10);
-    const hoursPerWeek = parseInt(hoursSlider.value, 10);
-    
-    // ~80% of manual repetitive tasks eliminated
-    const weeklyHoursSaved = teamSize * hoursPerWeek * 0.8;
-    const totalAnnualHours = Math.round(weeklyHoursSaved * 52);
-    const totalValue = totalAnnualHours * 50;
-
-    teamVal.textContent = `${teamSize} ${teamSize === 1 ? 'Person' : 'People'}`;
-    hoursVal.textContent = `${hoursPerWeek} Hours`;
-    annualHours.textContent = `${totalAnnualHours.toLocaleString()} hrs`;
-    annualValue.textContent = `$${totalValue.toLocaleString()}/yr`;
-  }
-
-  teamSlider.addEventListener('input', calculate);
-  hoursSlider.addEventListener('input', calculate);
-  calculate();
 }
 
 /* ==========================================================================
