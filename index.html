@@ -1742,6 +1742,198 @@ ul {
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* --- Selected Work / Portfolio --- */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.work-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.work-card:hover {
+  background: var(--bg-surface-elevated);
+  border-color: var(--border-active);
+  transform: translateY(-2px);
+}
+
+.work-card:focus-visible {
+  outline: 2px solid var(--text-white);
+  outline-offset: 3px;
+}
+
+/* Accent hairline that reads as the project's signature colour */
+.work-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--work-accent-from), var(--work-accent-to));
+  opacity: 0.55;
+  transition: opacity var(--transition-fast);
+  z-index: 2;
+}
+
+.work-card:hover::before {
+  opacity: 1;
+}
+
+.work-thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-surface-input);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.work-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-card:hover .work-thumb img {
+  transform: scale(1.03);
+}
+
+/* Scrim keeps the index legible over any screenshot */
+.work-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(8, 9, 12, 0.18) 0%, rgba(8, 9, 12, 0) 30%, rgba(8, 9, 12, 0.42) 100%);
+  pointer-events: none;
+}
+
+.work-tag-line {
+  font-size: 0.68rem;
+  color: var(--text-subtle);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.4rem;
+}
+
+.work-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 1.5rem 1.5rem 1.25rem;
+}
+
+.work-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.6rem;
+  color: var(--text-white);
+}
+
+.work-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  flex-grow: 1;
+}
+
+.work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.work-tag {
+  font-size: 0.66rem;
+  color: var(--text-subtle);
+  letter-spacing: 0.06em;
+  background: var(--accent-pill-bg);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill);
+  padding: 0.22rem 0.6rem;
+  white-space: nowrap;
+}
+
+.work-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: var(--text-light);
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-hairline);
+}
+
+.work-link .work-host {
+  color: var(--text-subtle);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.work-link .work-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-white);
+  flex-shrink: 0;
+}
+
+.work-link svg {
+  transition: transform var(--transition-fast);
+}
+
+.work-card:hover .work-link svg {
+  transform: translate(2px, -2px);
+}
+
+.work-footnote {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  text-align: center;
+}
+
+.work-footnote a {
+  color: var(--text-light);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.work-footnote a:hover {
+  color: var(--text-white);
+  border-color: var(--border-active);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-card,
+  .work-thumb img,
+  .work-link svg {
+    transition: none;
+  }
+
+  .work-card:hover,
+  .work-card:hover .work-thumb img,
+  .work-card:hover .work-link svg {
+    transform: none;
+  }
+}
+
 /* --- Responsive Breakpoints --- */
 @media (max-width: 1024px) {
   .capabilities-grid,
@@ -1751,6 +1943,10 @@ ul {
 
   .process-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .work-body {
+    padding: 1.35rem 1.25rem 1.15rem;
   }
 
   .workflow-canvas {
@@ -1824,7 +2020,8 @@ ul {
     font-size: 2.6rem;
   }
 
-  .process-grid {
+  .process-grid,
+  .work-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1917,6 +2114,7 @@ ul {
           <li><a href="#hero" class="nav-link active">Home</a></li>
           <li><a href="#capabilities" class="nav-link">What We Do</a></li>
           <li><a href="#process" class="nav-link">How It Works</a></li>
+          <li><a href="#work" class="nav-link">Our Work</a></li>
           <li><a href="#pricing" class="nav-link">Pricing</a></li>
           <li><a href="#faq" class="nav-link">FAQ</a></li>
           <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -2229,7 +2427,137 @@ ul {
       </div>
     </section>
 
-    <!-- 5. PRICING -->
+    <!-- 5. SELECTED WORK (Portfolio of shipped tools) -->
+    <section class="section work-section" id="work" aria-labelledby="work-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge font-mono">SELECTED WORK</div>
+          <h2 class="section-title" id="work-title">
+            Tools we&rsquo;ve shipped, running in production today.
+          </h2>
+          <p class="section-description">
+            Every build below started as a bottleneck on a discovery call. Each one is live, owned outright by the client, and still running. Open any of them and see for yourself.
+          </p>
+        </div>
+
+        <div class="work-grid">
+          <!-- 01: Offhand AI -->
+          <a class="work-card" href="https://offhandai.co/" target="_blank" rel="noopener noreferrer"
+             style="--work-accent-from:#6366f1; --work-accent-to:#22d3ee;">
+            <div class="work-thumb">
+              <img src="images/work/offhand-ai.jpg" alt="Offhand AI website — custom AI automations for small businesses" loading="lazy" decoding="async" width="1280" height="720">
+            </div>
+            <div class="work-body">
+              <div class="work-tag-line font-mono">01 // AUTOMATION PLATFORM</div>
+              <h3 class="work-title">Offhand AI</h3>
+              <p class="work-text">
+                Custom AI automations for small businesses &mdash; reporting, data entry and follow-ups, handled without anyone re-typing a thing.
+              </p>
+              <div class="work-tags font-mono">
+                <span class="work-tag">AI</span>
+                <span class="work-tag">AUTOMATION</span>
+                <span class="work-tag">SMALL BUSINESS</span>
+              </div>
+              <div class="work-link font-mono">
+                <span class="work-host">offhandai.co</span>
+                <span class="work-cta">
+                  View project
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 02: ALS OS -->
+          <a class="work-card" href="https://als-inventory.netlify.app/" target="_blank" rel="noopener noreferrer"
+             style="--work-accent-from:#f97316; --work-accent-to:#facc15;">
+            <div class="work-thumb">
+              <img src="images/work/als-os.jpg" alt="ALS OS — real-time inventory and audit system for a 20-van fleet" loading="lazy" decoding="async" width="1280" height="720">
+            </div>
+            <div class="work-body">
+              <div class="work-tag-line font-mono">02 // FLEET OPERATIONS</div>
+              <h3 class="work-title">ALS OS</h3>
+              <p class="work-text">
+                Real-time inventory and audit system tracking materials across a 20-van fleet, so stock counts stop living on clipboards.
+              </p>
+              <div class="work-tags font-mono">
+                <span class="work-tag">FLEET OPS</span>
+                <span class="work-tag">INVENTORY</span>
+                <span class="work-tag">CUSTOM TOOL</span>
+              </div>
+              <div class="work-link font-mono">
+                <span class="work-host">als-inventory.netlify.app</span>
+                <span class="work-cta">
+                  View project
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 03: Halvorsen Intake -->
+          <a class="work-card" href="https://whitdeckard09.github.io/ai-tools-portfolio/projects/halvorsen-intake.html" target="_blank" rel="noopener noreferrer"
+             style="--work-accent-from:#10b981; --work-accent-to:#84cc16;">
+            <div class="work-thumb">
+              <img src="images/work/halvorsen-intake.jpg" alt="Halvorsen Intake — AI service intake desk that classifies requests and drafts replies" loading="lazy" decoding="async" width="1280" height="720">
+            </div>
+            <div class="work-body">
+              <div class="work-tag-line font-mono">03 // INTAKE AUTOMATION</div>
+              <h3 class="work-title">Halvorsen Intake</h3>
+              <p class="work-text">
+                A service intake desk that classifies each incoming request, drafts the reply, and holds a callback slot &mdash; before anyone opens the inbox.
+              </p>
+              <div class="work-tags font-mono">
+                <span class="work-tag">INTAKE FORM</span>
+                <span class="work-tag">HVAC</span>
+                <span class="work-tag">WORKFLOW</span>
+              </div>
+              <div class="work-link font-mono">
+                <span class="work-host">Live demo</span>
+                <span class="work-cta">
+                  View project
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+
+          <!-- 04: Apex Air -->
+          <a class="work-card" href="https://whitdeckard09.github.io/ai-tools-portfolio/projects/apex-air/index.html" target="_blank" rel="noopener noreferrer"
+             style="--work-accent-from:#ec4899; --work-accent-to:#f43f5e;">
+            <div class="work-thumb">
+              <img src="images/work/apex-air.jpg" alt="Apex Air — scroll-driven 3D website following a service truck through HVAC calls" loading="lazy" decoding="async" width="1280" height="720">
+            </div>
+            <div class="work-body">
+              <div class="work-tag-line font-mono">04 // BRAND SITE</div>
+              <h3 class="work-title">Apex Air</h3>
+              <p class="work-text">
+                A scroll-driven 3D site following a service truck through a morning of HVAC calls &mdash; built to make a trade company look like a tech company.
+              </p>
+              <div class="work-tags font-mono">
+                <span class="work-tag">THREE.JS</span>
+                <span class="work-tag">3D WEB</span>
+                <span class="work-tag">HVAC</span>
+              </div>
+              <div class="work-link font-mono">
+                <span class="work-host">Live demo</span>
+                <span class="work-cta">
+                  View project
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <p class="work-footnote font-mono">
+          More builds and case studies in the
+          <a href="https://whitdeckard09.github.io/ai-tools-portfolio/" target="_blank" rel="noopener noreferrer">full portfolio</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- 6. PRICING -->
     <section class="section pricing-section" id="pricing" aria-labelledby="pricing-title">
       <div class="container">
         <div class="section-header">
@@ -2421,7 +2749,7 @@ ul {
       </div>
     </section>
 
-    <!-- 6. FAQ -->
+    <!-- 7. FAQ -->
     <section class="section faq-section" id="faq" aria-labelledby="faq-title">
       <div class="container">
         <div class="section-header">
@@ -2644,7 +2972,7 @@ ul {
     }
     </script>
 
-    <!-- 7. CONTACT & DIRECT BOOKING SECTION -->
+    <!-- 8. CONTACT & DIRECT BOOKING SECTION -->
     <section class="section contact-section" id="contact" aria-labelledby="contact-title">
       <div class="container">
         <div class="contact-grid">
@@ -2711,7 +3039,7 @@ ul {
     </section>
   </main>
 
-  <!-- 7. FOOTER -->
+  <!-- 9. FOOTER -->
   <footer class="footer-wrapper">
     <div class="container footer-container">
       <!-- Left: Logo & Brand statement -->
@@ -2737,6 +3065,7 @@ ul {
           <li><a href="#hero">Home</a></li>
           <li><a href="#capabilities">What We Do</a></li>
           <li><a href="#process">How It Works</a></li>
+          <li><a href="#work">Our Work</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#contact">Contact &amp; Discovery</a></li>
