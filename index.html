@@ -1742,30 +1742,49 @@ ul {
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* --- Selected Work / Portfolio --- */
-.work-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+/* --- Selected Work / Portfolio Carousel --- */
+.work-carousel {
+  position: relative;
+}
+
+.work-viewport {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  touch-action: pan-y;
+}
+
+.work-track {
+  display: flex;
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.work-track.is-dragging {
+  transition: none;
+  cursor: grabbing;
+}
+
+.work-slide {
+  flex: 0 0 100%;
+  min-width: 0;
 }
 
 .work-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1.32fr 1fr;
   background: var(--bg-surface-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .work-card:hover {
   background: var(--bg-surface-elevated);
   border-color: var(--border-active);
-  transform: translateY(-2px);
 }
 
 .work-card:focus-visible {
@@ -1782,7 +1801,7 @@ ul {
   right: 0;
   height: 2px;
   background: linear-gradient(90deg, var(--work-accent-from), var(--work-accent-to));
-  opacity: 0.55;
+  opacity: 0.7;
   transition: opacity var(--transition-fast);
   z-index: 2;
 }
@@ -1796,29 +1815,37 @@ ul {
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--bg-surface-input);
-  border-bottom: 1px solid var(--border-hairline);
+  border-right: 1px solid var(--border-hairline);
 }
 
 .work-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: top center;
   display: block;
-  transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .work-card:hover .work-thumb img {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
-/* Scrim keeps the index legible over any screenshot */
+/* Scrim ties the screenshot into the dark surface */
 .work-thumb::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(8, 9, 12, 0.18) 0%, rgba(8, 9, 12, 0) 30%, rgba(8, 9, 12, 0.42) 100%);
+  background: linear-gradient(90deg, rgba(8, 9, 12, 0) 70%, rgba(8, 9, 12, 0.35) 100%);
   pointer-events: none;
+}
+
+.work-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.25rem 2rem;
 }
 
 .work-tag-line {
@@ -1828,32 +1855,24 @@ ul {
   margin-bottom: 0.4rem;
 }
 
-.work-body {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding: 1.5rem 1.5rem 1.25rem;
-}
-
 .work-title {
-  font-size: 1.25rem;
-  margin-bottom: 0.6rem;
+  font-size: 1.5rem;
+  margin-bottom: 0.65rem;
   color: var(--text-white);
 }
 
 .work-text {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
-  flex-grow: 1;
+  line-height: 1.65;
+  margin-bottom: 1.5rem;
 }
 
 .work-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .work-tag {
@@ -1901,8 +1920,107 @@ ul {
   transform: translate(2px, -2px);
 }
 
+/* --- Carousel controls --- */
+.work-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.work-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.work-counter {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  letter-spacing: 0.06em;
+}
+
+.work-counter #workCounter {
+  color: var(--text-white);
+}
+
+.work-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.work-dot {
+  width: 28px;
+  height: 4px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.16);
+  cursor: pointer;
+  transition: background var(--transition-fast), width var(--transition-fast);
+}
+
+.work-dot:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.work-dot.is-active {
+  width: 44px;
+  background: var(--text-white);
+}
+
+.work-dot:focus-visible,
+.work-arrow:focus-visible {
+  outline: 2px solid var(--text-white);
+  outline-offset: 3px;
+}
+
+.work-arrows {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.work-arrow {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.work-arrow:hover:not(:disabled) {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-active);
+  color: var(--text-white);
+}
+
+.work-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Screen-reader-only announcement of the current slide */
+.work-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 .work-footnote {
-  margin-top: 2rem;
+  margin-top: 2.25rem;
   font-size: 0.8rem;
   color: var(--text-subtle);
   text-align: center;
@@ -1921,13 +2039,13 @@ ul {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .work-card,
+  .work-track,
   .work-thumb img,
-  .work-link svg {
+  .work-link svg,
+  .work-dot {
     transition: none;
   }
 
-  .work-card:hover,
   .work-card:hover .work-thumb img,
   .work-card:hover .work-link svg {
     transform: none;
@@ -1945,8 +2063,16 @@ ul {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .work-card {
+    grid-template-columns: 1.15fr 1fr;
+  }
+
   .work-body {
-    padding: 1.35rem 1.25rem 1.15rem;
+    padding: 1.75rem 1.5rem;
+  }
+
+  .work-title {
+    font-size: 1.35rem;
   }
 
   .workflow-canvas {
@@ -2020,9 +2146,37 @@ ul {
     font-size: 2.6rem;
   }
 
-  .process-grid,
-  .work-grid {
+  .process-grid {
     grid-template-columns: 1fr;
+  }
+
+  .work-card {
+    grid-template-columns: 1fr;
+  }
+
+  .work-thumb {
+    border-right: none;
+    border-bottom: 1px solid var(--border-hairline);
+  }
+
+  .work-thumb::after {
+    background: linear-gradient(180deg, rgba(8, 9, 12, 0) 60%, rgba(8, 9, 12, 0.35) 100%);
+  }
+
+  .work-body {
+    padding: 1.5rem 1.35rem;
+  }
+
+  .work-controls-left {
+    gap: 0.9rem;
+  }
+
+  .work-dot {
+    width: 22px;
+  }
+
+  .work-dot.is-active {
+    width: 34px;
   }
 
   .faq-question {
@@ -2427,7 +2581,7 @@ ul {
       </div>
     </section>
 
-    <!-- 5. SELECTED WORK (Portfolio of shipped tools) -->
+    <!-- 5. SELECTED WORK (Portfolio carousel of shipped tools) -->
     <section class="section work-section" id="work" aria-labelledby="work-title">
       <div class="container">
         <div class="section-header">
@@ -2440,114 +2594,124 @@ ul {
           </p>
         </div>
 
-        <div class="work-grid">
-          <!-- 01: Offhand AI -->
-          <a class="work-card" href="https://offhandai.co/" target="_blank" rel="noopener noreferrer"
-             style="--work-accent-from:#6366f1; --work-accent-to:#22d3ee;">
-            <div class="work-thumb">
-              <img src="images/work/offhand-ai.jpg" alt="Offhand AI website — custom AI automations for small businesses" loading="lazy" decoding="async" width="1280" height="720">
-            </div>
-            <div class="work-body">
-              <div class="work-tag-line font-mono">01 // AUTOMATION PLATFORM</div>
-              <h3 class="work-title">Offhand AI</h3>
-              <p class="work-text">
-                Custom AI automations for small businesses &mdash; reporting, data entry and follow-ups, handled without anyone re-typing a thing.
-              </p>
-              <div class="work-tags font-mono">
-                <span class="work-tag">AI</span>
-                <span class="work-tag">AUTOMATION</span>
-                <span class="work-tag">SMALL BUSINESS</span>
-              </div>
-              <div class="work-link font-mono">
-                <span class="work-host">offhandai.co</span>
-                <span class="work-cta">
-                  View project
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                </span>
-              </div>
-            </div>
-          </a>
+        <div class="work-carousel" id="workCarousel" role="group" aria-roledescription="carousel" aria-label="Selected client work">
+          <div class="work-viewport" id="workViewport">
+            <div class="work-track" id="workTrack">
 
-          <!-- 02: ALS OS -->
-          <a class="work-card" href="https://als-inventory.netlify.app/" target="_blank" rel="noopener noreferrer"
-             style="--work-accent-from:#f97316; --work-accent-to:#facc15;">
-            <div class="work-thumb">
-              <img src="images/work/als-os.jpg" alt="ALS OS — real-time inventory and audit system for a 20-van fleet" loading="lazy" decoding="async" width="1280" height="720">
-            </div>
-            <div class="work-body">
-              <div class="work-tag-line font-mono">02 // FLEET OPERATIONS</div>
-              <h3 class="work-title">ALS OS</h3>
-              <p class="work-text">
-                Real-time inventory and audit system tracking materials across a 20-van fleet, so stock counts stop living on clipboards.
-              </p>
-              <div class="work-tags font-mono">
-                <span class="work-tag">FLEET OPS</span>
-                <span class="work-tag">INVENTORY</span>
-                <span class="work-tag">CUSTOM TOOL</span>
+              <!-- 01: Offhand AI -->
+              <div class="work-slide" role="group" aria-roledescription="slide" aria-label="1 of 3: Offhand AI">
+                <a class="work-card" href="https://offhandai.co/" target="_blank" rel="noopener noreferrer"
+                   style="--work-accent-from:#6366f1; --work-accent-to:#22d3ee;">
+                  <div class="work-thumb">
+                    <img src="images/work/offhand-ai.jpg" alt="Offhand AI website — custom AI automations for small businesses" loading="lazy" decoding="async" width="1280" height="720" draggable="false">
+                  </div>
+                  <div class="work-body">
+                    <div class="work-tag-line font-mono">01 // AUTOMATION PLATFORM</div>
+                    <h3 class="work-title">Offhand AI</h3>
+                    <p class="work-text">
+                      Custom AI automations for small businesses &mdash; reporting, data entry and follow-ups, handled without anyone re-typing a thing.
+                    </p>
+                    <div class="work-tags font-mono">
+                      <span class="work-tag">AI</span>
+                      <span class="work-tag">AUTOMATION</span>
+                      <span class="work-tag">SMALL BUSINESS</span>
+                    </div>
+                    <div class="work-link font-mono">
+                      <span class="work-host">offhandai.co</span>
+                      <span class="work-cta">
+                        View project
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                      </span>
+                    </div>
+                  </div>
+                </a>
               </div>
-              <div class="work-link font-mono">
-                <span class="work-host">als-inventory.netlify.app</span>
-                <span class="work-cta">
-                  View project
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                </span>
-              </div>
-            </div>
-          </a>
 
-          <!-- 03: Halvorsen Intake -->
-          <a class="work-card" href="https://whitdeckard09.github.io/ai-tools-portfolio/projects/halvorsen-intake.html" target="_blank" rel="noopener noreferrer"
-             style="--work-accent-from:#10b981; --work-accent-to:#84cc16;">
-            <div class="work-thumb">
-              <img src="images/work/halvorsen-intake.jpg" alt="Halvorsen Intake — AI service intake desk that classifies requests and drafts replies" loading="lazy" decoding="async" width="1280" height="720">
-            </div>
-            <div class="work-body">
-              <div class="work-tag-line font-mono">03 // INTAKE AUTOMATION</div>
-              <h3 class="work-title">Halvorsen Intake</h3>
-              <p class="work-text">
-                A service intake desk that classifies each incoming request, drafts the reply, and holds a callback slot &mdash; before anyone opens the inbox.
-              </p>
-              <div class="work-tags font-mono">
-                <span class="work-tag">INTAKE FORM</span>
-                <span class="work-tag">HVAC</span>
-                <span class="work-tag">WORKFLOW</span>
+              <!-- 02: ALS OS -->
+              <div class="work-slide" role="group" aria-roledescription="slide" aria-label="2 of 3: ALS OS">
+                <a class="work-card" href="https://als-inventory.netlify.app/" target="_blank" rel="noopener noreferrer"
+                   style="--work-accent-from:#f97316; --work-accent-to:#facc15;">
+                  <div class="work-thumb">
+                    <img src="images/work/als-os.jpg" alt="ALS OS — real-time inventory and audit system for a 20-van fleet" loading="lazy" decoding="async" width="1280" height="720" draggable="false">
+                  </div>
+                  <div class="work-body">
+                    <div class="work-tag-line font-mono">02 // FLEET OPERATIONS</div>
+                    <h3 class="work-title">ALS OS</h3>
+                    <p class="work-text">
+                      Real-time inventory and audit system tracking materials across a 20-van fleet, so stock counts stop living on clipboards.
+                    </p>
+                    <div class="work-tags font-mono">
+                      <span class="work-tag">FLEET OPS</span>
+                      <span class="work-tag">INVENTORY</span>
+                      <span class="work-tag">CUSTOM TOOL</span>
+                    </div>
+                    <div class="work-link font-mono">
+                      <span class="work-host">als-inventory.netlify.app</span>
+                      <span class="work-cta">
+                        View project
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                      </span>
+                    </div>
+                  </div>
+                </a>
               </div>
-              <div class="work-link font-mono">
-                <span class="work-host">Live demo</span>
-                <span class="work-cta">
-                  View project
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                </span>
-              </div>
-            </div>
-          </a>
 
-          <!-- 04: Apex Air -->
-          <a class="work-card" href="https://whitdeckard09.github.io/ai-tools-portfolio/projects/apex-air/index.html" target="_blank" rel="noopener noreferrer"
-             style="--work-accent-from:#ec4899; --work-accent-to:#f43f5e;">
-            <div class="work-thumb">
-              <img src="images/work/apex-air.jpg" alt="Apex Air — scroll-driven 3D website following a service truck through HVAC calls" loading="lazy" decoding="async" width="1280" height="720">
-            </div>
-            <div class="work-body">
-              <div class="work-tag-line font-mono">04 // BRAND SITE</div>
-              <h3 class="work-title">Apex Air</h3>
-              <p class="work-text">
-                A scroll-driven 3D site following a service truck through a morning of HVAC calls &mdash; built to make a trade company look like a tech company.
-              </p>
-              <div class="work-tags font-mono">
-                <span class="work-tag">THREE.JS</span>
-                <span class="work-tag">3D WEB</span>
-                <span class="work-tag">HVAC</span>
+              <!-- 03: Halvorsen Intake -->
+              <div class="work-slide" role="group" aria-roledescription="slide" aria-label="3 of 3: Halvorsen Intake">
+                <a class="work-card" href="https://whitdeckard09.github.io/ai-tools-portfolio/projects/halvorsen-intake.html" target="_blank" rel="noopener noreferrer"
+                   style="--work-accent-from:#10b981; --work-accent-to:#84cc16;">
+                  <div class="work-thumb">
+                    <img src="images/work/halvorsen-intake.jpg" alt="Halvorsen Intake — AI service intake desk that classifies requests and drafts replies" loading="lazy" decoding="async" width="1280" height="720" draggable="false">
+                  </div>
+                  <div class="work-body">
+                    <div class="work-tag-line font-mono">03 // INTAKE AUTOMATION</div>
+                    <h3 class="work-title">Halvorsen Intake</h3>
+                    <p class="work-text">
+                      A service intake desk that classifies each incoming request, drafts the reply, and holds a callback slot &mdash; before anyone opens the inbox.
+                    </p>
+                    <div class="work-tags font-mono">
+                      <span class="work-tag">INTAKE FORM</span>
+                      <span class="work-tag">HVAC</span>
+                      <span class="work-tag">WORKFLOW</span>
+                    </div>
+                    <div class="work-link font-mono">
+                      <span class="work-host">Live demo</span>
+                      <span class="work-cta">
+                        View project
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                      </span>
+                    </div>
+                  </div>
+                </a>
               </div>
-              <div class="work-link font-mono">
-                <span class="work-host">Live demo</span>
-                <span class="work-cta">
-                  View project
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                </span>
+
+            </div>
+          </div>
+
+          <!-- Carousel controls -->
+          <div class="work-controls">
+            <div class="work-controls-left">
+              <span class="work-counter font-mono" aria-hidden="true">
+                <span id="workCounter">01</span> / 03
+              </span>
+              <div class="work-dots" id="workDots">
+                <button type="button" class="work-dot is-active" data-index="0" aria-label="Show project 1: Offhand AI" aria-current="true"></button>
+                <button type="button" class="work-dot" data-index="1" aria-label="Show project 2: ALS OS"></button>
+                <button type="button" class="work-dot" data-index="2" aria-label="Show project 3: Halvorsen Intake"></button>
               </div>
             </div>
-          </a>
+
+            <div class="work-arrows">
+              <button type="button" class="work-arrow" id="workPrev" aria-label="Previous project" aria-controls="workTrack">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button type="button" class="work-arrow" id="workNext" aria-label="Next project" aria-controls="workTrack">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+
+          <p class="work-live" aria-live="polite" id="workLive"></p>
         </div>
 
         <p class="work-footnote font-mono">
@@ -3152,6 +3316,7 @@ ul {
 document.addEventListener('DOMContentLoaded', () => {
   initHeroDotField();
   initWorkflowShowcase();
+  initWorkCarousel();
   initBookingModal();
   initClipboardHandlers();
   initFaqAccordion();
@@ -3568,6 +3733,138 @@ function initWorkflowShowcase() {
       });
     });
   });
+}
+
+/* ==========================================================================
+   2. SELECTED WORK CAROUSEL
+   ==========================================================================
+   One slide at a time, driven by a transform on the track. Supports arrows,
+   dots, keyboard (left/right when the carousel has focus) and pointer drag.
+
+   Drag is tracked on the viewport rather than the slides so a drag that ends
+   over a card does not also fire that card's link — `suppressClick` swallows
+   the click that the browser synthesises at the end of a drag gesture.
+   ========================================================================== */
+function initWorkCarousel() {
+  const carousel = document.getElementById('workCarousel');
+  const viewport = document.getElementById('workViewport');
+  const track = document.getElementById('workTrack');
+  if (!carousel || !viewport || !track) return;
+
+  const slides = Array.from(track.querySelectorAll('.work-slide'));
+  const dots = Array.from(carousel.querySelectorAll('.work-dot'));
+  const counter = document.getElementById('workCounter');
+  const live = document.getElementById('workLive');
+  const prevBtn = document.getElementById('workPrev');
+  const nextBtn = document.getElementById('workNext');
+  if (slides.length < 2) return;
+
+  const DRAG_THRESHOLD = 50;
+  let index = 0;
+  let dragging = false;
+  let startX = 0;
+  let deltaX = 0;
+  let suppressClick = false;
+
+  function render() {
+    track.style.transform = `translate3d(-${index * 100}%, 0, 0)`;
+
+    slides.forEach((slide, i) => {
+      const current = i === index;
+      slide.setAttribute('aria-hidden', current ? 'false' : 'true');
+      // Keep off-screen cards out of the tab order.
+      const link = slide.querySelector('.work-card');
+      if (link) link.tabIndex = current ? 0 : -1;
+    });
+
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === index);
+      if (i === index) dot.setAttribute('aria-current', 'true');
+      else dot.removeAttribute('aria-current');
+    });
+
+    if (counter) counter.textContent = String(index + 1).padStart(2, '0');
+    if (prevBtn) prevBtn.disabled = index === 0;
+    if (nextBtn) nextBtn.disabled = index === slides.length - 1;
+  }
+
+  function goTo(next, announce) {
+    const clamped = Math.max(0, Math.min(slides.length - 1, next));
+    if (clamped === index) return;
+    index = clamped;
+    render();
+
+    if (announce && live) {
+      const title = slides[index].querySelector('.work-title');
+      live.textContent = `Project ${index + 1} of ${slides.length}: ${title ? title.textContent.trim() : ''}`;
+    }
+  }
+
+  if (prevBtn) prevBtn.addEventListener('click', () => goTo(index - 1, true));
+  if (nextBtn) nextBtn.addEventListener('click', () => goTo(index + 1, true));
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => goTo(Number(dot.dataset.index), true));
+  });
+
+  carousel.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goTo(index - 1, true);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      goTo(index + 1, true);
+    }
+  });
+
+  /* --- Pointer drag --- */
+  viewport.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragging = true;
+    startX = e.clientX;
+    deltaX = 0;
+    track.classList.add('is-dragging');
+  });
+
+  viewport.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    deltaX = e.clientX - startX;
+    // Resist dragging past either end.
+    const atEdge = (deltaX > 0 && index === 0) || (deltaX < 0 && index === slides.length - 1);
+    const shift = atEdge ? deltaX * 0.25 : deltaX;
+    track.style.transform = `translate3d(calc(-${index * 100}% + ${shift}px), 0, 0)`;
+  });
+
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    track.classList.remove('is-dragging');
+
+    if (Math.abs(deltaX) > DRAG_THRESHOLD) {
+      suppressClick = true;
+      // A drag does not always produce a synthesised click, so the flag is
+      // cleared on the next turn as well. Without this it stays armed and
+      // swallows the next genuine click on a card.
+      setTimeout(() => { suppressClick = false; }, 0);
+      goTo(deltaX < 0 ? index + 1 : index - 1, true);
+    }
+    render();
+    deltaX = 0;
+  }
+
+  viewport.addEventListener('pointerup', endDrag);
+  viewport.addEventListener('pointercancel', endDrag);
+  viewport.addEventListener('pointerleave', endDrag);
+
+  // Swallow the click the browser fires at the end of a drag.
+  viewport.addEventListener('click', (e) => {
+    if (!suppressClick) return;
+    suppressClick = false;
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
+  render();
 }
 
 /* ==========================================================================
